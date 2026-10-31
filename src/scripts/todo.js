@@ -65,7 +65,7 @@ function TodoApp() {
 
       try {
         await axios.patch(url, null, { headers: headers })
-        awaitthis.getTodos()
+        await this.getTodos()
       } catch (err) {
         console.log(err)
       }
