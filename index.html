@@ -11,7 +11,7 @@
 
   <body x-data="todoapp" class="container px-2 py-4 mx-auto">
     <header class="banner">
-      <h1><a href="#todo" class="taskLink">TODO!</a></h1>
+      <h1><a @click.prevent="hasToken && gotoTaskForm()" href="#todo" class="taskLink">TODO!</a></h1>
       <div class="subtitle">
         <p class="text">Simple and Stupid TODO App</p>
         <p class="hidden text sm:block">
@@ -28,18 +28,18 @@
     <main class="px-6 todo-app main">
       <header>
         <nav class="navbar">
-          <a @click="logout" x-show="hasToken" class="signUpLink" href="#sign_out">登出</a>
+          <a @click.prevent="logout" x-show="hasToken" class="signUpLink" href="#sign_out">登出</a>
 
-          <a x-show="!hasToken" @click="gotoLogin" class="loginLink" href="#login">登入</a>
-          <a x-show="!hasToken" @click="gotoSignUp" class="signUpLink" href="#sign_up">註冊</a>
+          <a x-show="!hasToken" @click.prevent="gotoLogin" class="loginLink" href="#login">登入</a>
+          <a x-show="!hasToken" @click.prevent="gotoSignUp" class="signUpLink" href="#sign_up">註冊</a>
         </nav>
       </header>
 
       <section id="userSection">
         <!-- Login Section start -->
-        <section x-show="isLogin" id="loginSection">
+        <section x-show="isLogin()" id="loginSection">
           <h1>登入</h1>
-          <form id="loginForm">
+          <form id="loginForm" @submit.prevent="login">
             <div class="field">
               <label>
                 <h3>Email</h3>
@@ -62,9 +62,9 @@
             </div>
 
             <div class="items-center justify-between block sm:flex field">
-              <button @click.prevent="login">登入</button>
+              <button type="submit">登入</button>
               <div class="text-xl text-gray-600">
-                還沒有帳號嗎？<a @click="gotoSignUp" href="#" class="text-link signUpLink">註冊</a>一個吧！
+                還沒有帳號嗎？<a @click.prevent="gotoSignUp" href="#sign_up" class="text-link signUpLink">註冊</a>一個吧！
               </div>
             </div>
           </form>
@@ -72,20 +72,27 @@
         <!-- Login Section end -->
 
         <!-- Sign Up Section start -->
-        <section x-show="isSignUp" id="signUpSection">
+        <section x-show="isSignUp()" id="signUpSection">
           <h1>註冊帳號</h1>
-          <form id="signUpForm">
+          <form id="signUpForm" @submit.prevent="signup">
             <div class="field">
               <label>
                 <h3>Email</h3>
-                <input type="email" id="signUpEmail" autocomplete="email" spellcheck="false" placeholder="Email 信箱" />
+                <input x-model="email" type="email" id="signUpEmail" autocomplete="email" spellcheck="false" placeholder="Email 信箱" />
               </label>
             </div>
 
             <div class="field">
               <label>
                 <h3>暱稱</h3>
-                <input type="text" id="signUpNickname" autocomplete="name" spellcheck="false" placeholder="要怎麼稱呼你呢？" />
+                <input
+                  x-model="nickname"
+                  type="text"
+                  id="signUpNickname"
+                  autocomplete="name"
+                  spellcheck="false"
+                  placeholder="要怎麼稱呼你呢？"
+                />
               </label>
             </div>
 
@@ -93,6 +100,7 @@
               <label>
                 <h3>密碼</h3>
                 <input
+                  x-model="password"
                   type="password"
                   id="signUpPassword"
                   autocomplete="new-password"
@@ -104,7 +112,7 @@
 
             <div class="items-center justify-between block sm:flex field">
               <button>註冊</button>
-              <div class="text-xl text-gray-600">已經有帳號了？<a href="#" class="text-link loginLink">登入</a></div>
+              <div class="text-xl text-gray-600">已經有帳號了？<a href="#" @click.prevent="gotoLogin" class="text-link loginLink">登入</a></div>
             </div>
           </form>
         </section>
@@ -112,7 +120,7 @@
       </section>
 
       <!-- TODO Section start -->
-      <section x-show="isTaskForm" id="taskSection">
+      <section x-show="isTaskForm()" id="taskSection">
         <form id="todoForm" @submit.prevent="addTodo">
           <input x-model="task" type="text" id="taskInput" autocomplete="off" spellcheck="false" placeholder="做點重要的事吧..." />
           <button id="addTodoBtn">新增</button>
@@ -124,17 +132,17 @@
     <section x-show="hasToken" class="todo-list">
       <ul class="items">
         <!-- item start -->
-        <template x-for="todo in todos">
+        <template x-for="todo in todos" :key="todo.id">
           <li>
             <div class="item-content">
               <label>
-                <input type="checkbox" />
+                <input @click="toggleTodo(todo.id)" :checked="todo.completed_at" type="checkbox" />
                 <p class="content" x-text="todo.content"></p>
               </label>
             </div>
             <div class="item-control">
               <a href="#" class="edit"><img class="icon" src="src/assets/pen-to-square-solid.svg" /></a>
-              <a href="#" class="delete"><img class="icon" src="src/assets/trash-can-solid.svg" /></a>
+              <a @click.prevent="removeTodo(todo.id)" href="#" class="delete"><img class="icon" src="src/assets/trash-can-solid.svg" /></a>
             </div>
           </li>
         </template>

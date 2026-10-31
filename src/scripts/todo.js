@@ -7,6 +7,7 @@ function TodoApp() {
     page: "login",
     email: "",
     password: "",
+    nickname: "",
     hasToken: false,
     todos: [],
     task: "",
@@ -23,28 +24,74 @@ function TodoApp() {
       }
     },
 
+    async removeTodo(id) {
+      const url = `https://todoo.5xcamp.us/todos/${id}`
+      const token = localStorage.getItem("jwt")
+      const headers = { Authorization: token }
+
+      try {
+        // 真打 API
+        await axios.delete(url, { headers })
+        await this.getTodos()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // async removeTodo(id) {
+    //   console.log("----------")
+    //   console.log(id)
+    //   console.log("----------")
+
+    //   const url = `https://todoo.5xcamp.us/todos/${id}`
+    //   const token = localStorage.getItem("jwt")
+    //   const headers = { Authorization: token }
+
+    //   try {
+    //     // 演
+    //     this.$el.parentElement.parentElement.remove()
+
+    //     // 真打 API
+    //     await axios.delete(url, { headers: headers })
+    //     // this.getTodos()
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // },
+
+    async toggleTodo(id) {
+      const url = `https://todoo.5xcamp.us/todos/${id}/toggle`
+      const token = localStorage.getItem("jwt")
+      const headers = { Authorization: token }
+
+      try {
+        await axios.patch(url, null, { headers: headers })
+        awaitthis.getTodos()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
     async addTodo() {
-      if (this.task != "") {
-        const url = "https://todoo.5xcamp.us/todos"
-        const todoData = {
-          todo: {
-            content: this.task,
-          },
-        }
-        const token = localStorage.getItem("jwt")
-        const headers = { Authorization: token }
+      if (this.task.trim() === "") return
 
-        try {
-          // 演戲
-          const fakeTask = { id: 1232331232, content: this.task }
-          this.todos.unshift(fakeTask)
+      const url = "https://todoo.5xcamp.us/todos"
 
-          // 真的打
-          await axios.post(url, todoData, { headers: headers })
-          this.getTodos()
-        } catch (err) {
-          console.log(err)
-        }
+      const todoData = {
+        todo: {
+          content: this.task,
+        },
+      }
+
+      const token = localStorage.getItem("jwt")
+      const headers = { Authorization: token }
+
+      try {
+        await axios.post(url, todoData, { headers })
+
+        this.task = ""
+        await this.getTodos()
+      } catch (err) {
+        console.log(err)
       }
     },
 
@@ -72,6 +119,32 @@ function TodoApp() {
       this.gotoLogin()
 
       // 2. session 刪除 = 登出 API
+    },
+    async signup() {
+      if (this.email == "" || this.password == "" || this.nickname == "") {
+        console.log("請輸入欄位資料")
+      } else {
+        const userData = {
+          user: {
+            email: this.email,
+            password: this.password,
+            nickname: this.nickname,
+          },
+        }
+
+        const url = "https://todoo.5xcamp.us/users"
+
+        try {
+          await axios.post(url, userData)
+          this.email = ""
+          this.nickname = ""
+          this.password = ""
+
+          this.gotoLogin()
+        } catch (err) {
+          console.log(err)
+        }
+      }
     },
     async login() {
       if (this.email == "" || this.password == "") {
@@ -114,13 +187,13 @@ function TodoApp() {
     },
 
     isLogin() {
-      return this.page == "login"
+      return this.page === "login"
     },
     isSignUp() {
-      return this.page == "signup"
+      return this.page === "signup"
     },
     isTaskForm() {
-      return this.page == "task"
+      return this.page === "task"
     },
   }
 }
