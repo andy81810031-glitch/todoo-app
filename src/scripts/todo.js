@@ -12,6 +12,7 @@ function TodoApp() {
     todos: [],
     task: "",
 
+
     init() {
       // 檢查是否有 JWT
       const token = localStorage.getItem("jwt")
@@ -23,6 +24,7 @@ function TodoApp() {
         this.getTodos()
       }
     },
+
 
     async removeTodo(id) {
       const url = `https://todoo.5xcamp.us/todos/${id}`
@@ -37,26 +39,7 @@ function TodoApp() {
         console.log(err)
       }
     },
-    // async removeTodo(id) {
-    //   console.log("----------")
-    //   console.log(id)
-    //   console.log("----------")
-
-    //   const url = `https://todoo.5xcamp.us/todos/${id}`
-    //   const token = localStorage.getItem("jwt")
-    //   const headers = { Authorization: token }
-
-    //   try {
-    //     // 演
-    //     this.$el.parentElement.parentElement.remove()
-
-    //     // 真打 API
-    //     await axios.delete(url, { headers: headers })
-    //     // this.getTodos()
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // },
+    
 
     async toggleTodo(id) {
       const url = `https://todoo.5xcamp.us/todos/${id}/toggle`
@@ -70,6 +53,7 @@ function TodoApp() {
         console.log(err)
       }
     },
+
 
     async addTodo() {
       if (this.task.trim() === "") return
@@ -95,6 +79,7 @@ function TodoApp() {
       }
     },
 
+
     async getTodos() {
       const url = "https://todoo.5xcamp.us/todos"
       const token = localStorage.getItem("jwt")
@@ -111,6 +96,7 @@ function TodoApp() {
       }
     },
 
+
     async logout() {
       // 登出
       // 1. storage 的 token 刪除
@@ -120,6 +106,8 @@ function TodoApp() {
 
       // 2. session 刪除 = 登出 API
     },
+
+
     async signup() {
       if (this.email == "" || this.password == "" || this.nickname == "") {
         console.log("請輸入欄位資料")
@@ -146,6 +134,8 @@ function TodoApp() {
         }
       }
     },
+
+
     async login() {
       if (this.email == "" || this.password == "") {
         console.log("請輸入 email 或密碼")
@@ -176,6 +166,8 @@ function TodoApp() {
         }
       }
     },
+
+
     gotoLogin() {
       this.page = "login"
     },
@@ -186,6 +178,7 @@ function TodoApp() {
       this.page = "task"
     },
 
+    
     isLogin() {
       return this.page === "login"
     },
